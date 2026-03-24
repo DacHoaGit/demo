@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biểu đồ nhóm mục tiêu</title>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/bullet.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #fff;
+      padding: 24px 32px;
+    }
+    .chart-row-container {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 4px;
+    }
+    .row-label {
+      width: 140px;
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 600;
+      padding-top: 2px;
+      align-self: flex-start;
+    }
+    .row-chart {
+      flex: 1;
+      position: relative;
+    }
+    .row-score {
+      width: 90px;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: #888;
+      text-align: right;
+      padding-top: 2px;
+      align-self: flex-start;
+    }
+  </style>
+</head>
+<body>
+
+<div id="container"></div>
+
+<script>
+  const groups = [
+    {
+      name: 'Nhóm mục tiêu 1',
+      value: 90,
+      barColor: '#4dd9c0',        // turquoise/cyan bar
+      trackColor: '#d6f5ee',      // very light cyan track
+      markerColor: '#00897b',     // dark teal marker line
+      labelColor: '#4dd9c0',
+      score: '90/100 Đạt'
+    },
+    {
+      name: 'Nhóm mục tiêu 2',
+      value: 3,
+      barColor: '#c0aedf',        // light purple bar
+      trackColor: '#ece6f5',      // light lavender track
+      markerColor: '#7e57c2',     // purple marker
+      labelColor: '#9b59b6',
+      score: ''
+    },
+    {
+      name: 'Nhóm mục tiêu 3',
+      value: 70,
+      barColor: '#f0aede',        // pink bar
+      trackColor: '#fae6f5',      // very light pink track
+      markerColor: '#ab47bc',     // dark pink marker
+      labelColor: '#e05ab8',
+      score: '70/100 Đạt'
+    },
+    {
+      name: 'Nhóm mục tiêu 4',
+      value: 60,
+      barColor: '#cce05a',        // yellow-green bar
+      trackColor: '#edf5cc',      // light yellow-green track
+      markerColor: '#7cb342',     // dark green marker
+      labelColor: '#b5cc2a',
+      score: '60/100 Đạt'
+    }
+  ];
+
+  const container = document.getElementById('container');
+
+  groups.forEach((g, i) => {
+    // Outer flex row container
+    const rowDiv = document.createElement('div');
+    rowDiv.className = 'chart-row-container';
+
+    // Label
+    const labelDiv = document.createElement('div');
+    labelDiv.className = 'row-label';
+    labelDiv.style.color = g.labelColor;
+    labelDiv.textContent = g.name;
+
+    // Chart container
+    const chartDiv = document.createElement('div');
+    chartDiv.id = `chart-${i}`;
+    chartDiv.className = 'row-chart';
+    chartDiv.style.height = '40px';
+
+    // Score label
+    const scoreDiv = document.createElement('div');
+    scoreDiv.className = 'row-score';
+    scoreDiv.textContent = g.score;
+
+    rowDiv.appendChild(labelDiv);
+    rowDiv.appendChild(chartDiv);
+    rowDiv.appendChild(scoreDiv);
+    container.appendChild(rowDiv);
+
+    Highcharts.chart(`chart-${i}`, {
+      chart: {
+        type: 'bullet',
+        inverted: true,
+        margin: [12, 0, 0, 0],
+        height: 40,
+        spacing: [0, 0, 0, 0],
+        backgroundColor: 'transparent',
+        animation: false,
+        style: { fontFamily: "'Segoe UI', Arial, sans-serif" }
+      },
+      title: { text: null },
+      legend: { enabled: false },
+      xAxis: {
+        categories: [''],
+        lineWidth: 0,
+        tickWidth: 0,
+        labels: { enabled: false }
+      },
+      yAxis: {
+        min: 0,
+        max: 100,
+        gridLineWidth: 0,
+        lineWidth: 0,
+        tickWidth: 0,
+        labels: { enabled: false },
+        title: { text: null },
+        // Background track via plotBand
+        plotBands: [{
+          from: 0,
+          to: 100,
+          color: g.trackColor,
+          zIndex: 0
+        }]
+      },
+      tooltip: { enabled: false },
+      plotOptions: {
+        bullet: {
+          animation: false,
+          pointPadding: 0.08,
+          groupPadding: 0,
+          borderWidth: 0,
+          color: g.barColor,
+          targetOptions: {
+            width: '3px',
+            height: '80%',
+            color: g.markerColor,
+            borderWidth: 0
+          }
+        }
+      },
+      series: [{
+        type: 'bullet',
+        data: [{
+          y: g.value,
+          target: g.value   // marker placed exactly at the tip of the bar
+        }],
+        name: g.name
+      }],
+      credits: { enabled: false },
+      exporting: { enabled: false }
+    });
+  });
+</script>
+
+</body>
+</html>
